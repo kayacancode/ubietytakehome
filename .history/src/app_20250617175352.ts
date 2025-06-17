@@ -6,6 +6,5 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/device-status', deviceStatusRouter)
-app.use(errorHandler)
 
 export default app;

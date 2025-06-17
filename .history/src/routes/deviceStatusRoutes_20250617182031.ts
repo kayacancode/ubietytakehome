@@ -22,9 +22,9 @@ router.get('/:id', async (req,res) => {
 
 // create a new device status POST/Status
 router.post('/', async (req,res) =>{
-    const {deviceId, timestamp,batteryLevel, rssi, online} = req.body;
+    const {devicceId, timestamp,batteryLevel, rssi, online} = req.body;
     const newStatus = await prisma.deviceStatus.create({
-        data: {deviceId, timestamp, batteryLevel, rssi, online },
+        data: {devicceId, timestamp, batteryLevel, rssi, online },
     });
     res.json(newStatus)
 })

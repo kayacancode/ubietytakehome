@@ -1,0 +1,78 @@
+import express from 'express'
+import { PrismaClient } from '../../generated/prisma';
+import { apiKeyAuth } from '../middlewares/apiKeyAuth';
+import { Request, Response } from 'express';
+import { errorHandler } from '../middlewares/errorHandler';
+import { error } from 'console';
+const router = express.Router()
+const prisma = new PrismaClient();
+router.use(apiKeyAuth); // applying middleware to all routes
+
+
+// create a new device status POST/Status
+router.post('/', async (req:Request,res:Response) =>{
+    try{
+    const {deviceId, timestamp, batteryLevel, rssi, online} = req.body;
+
+    //validation 
+    if (!deviceId) {
+        return res.status(400).json({error:'Device id is required'});
+    }
+    if (!timestamp) {
+        return res.status(400).json({ error: 'timestamp is required' });
+      }
+      if (typeof online !== 'boolean') {
+        return res.status(400).json({ error: 'online must be a boolean' });
+      }
+
+    const newStatus = await prisma.deviceStatus.create({
+        data: {
+            deviceId, 
+            timestamp: new Date(timestamp),
+            batteryLevel, 
+            rssi, 
+            online 
+        },
+    });
+    res.status(201).json(newStatus);
+
+}catch (error) {
+    console.error("error creating deivce status: ", error);
+    res.status(500).json({error: "internal  server error"});
+}
+});
+
+
+
+// route to get all device statuses
+router.get('/', async (req:Request,res:Response)=> {
+    const statuses = await prisma.deviceStatus.findMany();
+    res.json(statuses);
+})
+
+// get device by ID
+// GET /status{deviceId}
+
+router.get('/', async (req: Request, res: Response) => {
+    const { deviceId } = req.query;
+    if (!deviceId) {
+      res.status(400).json({ error: 'deviceId is required' });
+      return;
+    }
+    try {
+      const status = await prisma.deviceStatus.findFirst({ //get the most recent 
+        where: { deviceId: req.query.deviceId as string },
+      });
+      if (!status) {
+        res.status(404).json({ error: 'No status found for this deviceId' });
+        return;
+      }
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+
+
+export default router; 

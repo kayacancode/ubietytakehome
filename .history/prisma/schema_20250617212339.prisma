@@ -14,11 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model DeviceStatus {
-  id Int @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   deviceId     String
   timestamp    DateTime
   batteryLevel Int?
   rssi         Int?
-  online       Boolean  @default(false)
+  online       Boolean
 }

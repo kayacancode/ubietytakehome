@@ -5,8 +5,7 @@ import { errorHandler } from './middlewares/errorHandler';
 const app = express();
 app.use(express.json());
 
-app.use('/api/status', deviceStatusRouter)
-
+app.use('/api', deviceStatusRouter)
 app.use(errorHandler)
 
 export default app;

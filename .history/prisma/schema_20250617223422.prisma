@@ -16,6 +16,7 @@ datasource db {
 
 model DeviceStatus {
   id Int @id @default(autoincrement())
+
   deviceId     String
   timestamp    DateTime
   batteryLevel Int?

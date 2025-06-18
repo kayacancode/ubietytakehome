@@ -76,7 +76,6 @@ router.get('/summary', (req: Request, res: Response) => {
           return latestStatus;
         })
       );
-      res.json(summaries);
     } catch (error) {
       console.error('Error fetching device summaries:', error);
       res.status(500).json({ error: 'Internal server error' });
